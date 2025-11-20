@@ -8,11 +8,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="assets\Onion.wav" />
+    <None Remove="Assets\Onion.wav" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="assets\Onion.wav">
+    <Content Include="Assets\Onion.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="assets\StereoLove.wav">
+    <None Update="Assets\StereoLove.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
