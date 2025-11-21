@@ -2,6 +2,8 @@
 using AudioVisualizer.Controls;
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -28,7 +30,13 @@ namespace AudioVisualizer
             VisualizerHost.Content = amplitudeVisualizer;
             activeVisualizer = amplitudeVisualizer;
 
-            _player = new AudioPlayer(new List<string> { "StereoLove.wav", "Onion.wav" });
+            string assetsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets");
+            var files = Directory.GetFiles(assetsPath, "*.*")
+                                    .Where(f => f.EndsWith(".mp3", StringComparison.OrdinalIgnoreCase)
+                                            || f.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
+                                            .Select(Path.GetFileName)
+                                            .ToList();
+            _player = new AudioPlayer(files);
 
             _player.StateChanged += OnStateChanged;
 
