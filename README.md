@@ -1,39 +1,33 @@
-# AudioVisualizer
-**Vibe Coded with ChatGPT4 -& 5** and also 
-**make sure the audio files exist in the Assets/ folder or the player will silently fail**
+# AudioVisualizer 2.0
+**Built with Claude Sonnet** 
 
-**Overview**
-- C# WPF project that visualizes audio playback in real time.
-- Supports multiple visualizers (Amplitude & FFT) and lets you toggle between them dynamically.
-- Uses NAudio for audio playback and analysis, and WPF Canvas for rendering visuals.
+> Make sure audio files exist in the `Assets/` folder — the player auto-loads everything it finds there.
 
+## Overview
+C# WPF application that visualizes audio playback in real-time with a neon/cyberpunk aesthetic.
+Uses NAudio for audio playback and FFT analysis, and WPF Canvas for rendering visuals.
 
-**Features**
-- Play, Pause, Stop, Next, Previous track functionality
-- Visualize audio amplitude in real-time
-- Visualize FFT (frequency spectrum) in real-time
-- Toggle between visualizer types on the fly
-- Playlist support with multiple audio files
-- Smooth bar animations and decay for better visual effect
+## Features
+- Play, Pause, Next, Previous track functionality
+- Auto-loads all `.wav` and `.mp3` files from `Assets/` folder
+- Volume control
+- **Amplitude Visualizer** — pulsing circular ring with shockwave beat detection
+- **FFT Visualizer** — frequency spectrum bars with gradient colors and peak indicators
+- Toggle between visualizers on the fly
+- Neon cyberpunk UI with custom styled controls
+- Custom draggable title bar
 
+## How to run
+1. Open project in Visual Studio
+2. Drop audio files (`.wav` / `.mp3`) into `Assets/` folder
+3. Build and run
+4. Controls:
+   - `▶ / ⏸` — Play / Pause
+   - `⏮ / ⏭` — Previous / Next track
+   - `Toggle View` — Switch between Amplitude and FFT visualizer
+   - Volume slider on the right side
 
-**How it works**
-1. Open the project in Visual Studio
-
-2. Ensure audio files are in Assets/ folder
-
-3. Build and run the project
-
-4. Use the buttons:
-
-  ▶ / ⏸ : Play / Pause
-  
-  ⏮ : Previous track
-  
-  ⏭ : Next track
-  
-  (At the moment you have to press the Play button, followed by the Next button. Consequences of vibe coding)
-  
-- Toggle Visualizer : Switch between Amplitude and FFT
-
-
+## Tech
+- .NET 10 / WPF
+- NAudio (playback, FFT, metering)
+- MathNet.Numerics
