@@ -1,5 +1,6 @@
 # AudioVisualizer 1.0
-**Built with Claude Sonnet** I'm merely along for the ride to learn some cool new stuff.
+**Built with Claude Sonnet** 
+-I'm merely along for the ride to learn some cool new stuff.
 
 > Make sure audio files exist in the `Assets/` folder — the player auto-loads everything it finds there.
 
