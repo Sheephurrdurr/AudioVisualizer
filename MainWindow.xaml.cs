@@ -1,9 +1,10 @@
 ﻿using AudioVisualizer.Audio;
 using AudioVisualizer.Controls;
 using System;
-using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace AudioVisualizer
@@ -28,18 +29,24 @@ namespace AudioVisualizer
             VisualizerHost.Content = amplitudeVisualizer;
             activeVisualizer = amplitudeVisualizer;
 
-            _player = new AudioPlayer(new List<string> { "StereoLove.wav", "Onion.wav" });
+            var assetsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets");
+
+            var files = Directory.GetFiles(assetsPath, "*.mp3")
+                .Concat(Directory.GetFiles(assetsPath, "*.wav"))
+                .Select(Path.GetFileName)
+                .Where(f => f != null)
+                .Select(f => f!) // null-forgiving operator since we already filtered out nulls with Where()
+                .ToList()!;
+
+            _player = new AudioPlayer(files);
 
             _player.StateChanged += OnStateChanged;
+            _player.TrackChanged += OnTrackChanged;
 
             _player.AmplitudeChanged += OnAmplitudeChanged;
             _player.FFTComputed += OnFFTComputed;
 
-            _player.FFTComputed += magnitudes =>
-            {
-                Console.WriteLine("FFT fired: " + magnitudes[0].ToString("F2"));
-            };
-
+            _player.LoadTrack(0);
 
             InitTimer();
         }
@@ -48,6 +55,7 @@ namespace AudioVisualizer
         {
             Dispatcher.Invoke(() =>
             {
+                Console.WriteLine($"raw amp: {amp:F3}");
                 if (VisualizerHost.Content is AmplitudeVisualizer visualizer)
                     visualizer.UpdateData(new[] { amp });
             });
@@ -60,6 +68,11 @@ namespace AudioVisualizer
                 if (VisualizerHost.Content is FFTVisualizer visualizer)
                     visualizer.UpdateData(fft);
             });
+        }
+
+        private void OnTrackChanged(string trackName)
+        {
+            Dispatcher.Invoke(() => TrackNameText.Text = trackName);
         }
 
         private void SwitchVisualizer(IVisualizerPage newVisualizer)
@@ -83,7 +96,11 @@ namespace AudioVisualizer
 
         private void OnStateChanged(Audio.PlayerState state)
         {
-            PausePlayButton.Content = state == Audio.PlayerState.Playing ? "⏸" : "▶";
+            Dispatcher.Invoke(() =>
+            {
+                PausePlayButton.Content = state == Audio.PlayerState.Playing ? "⏸" : "▶";
+            });
+           
         }
 
         private void PreviousButton_Click(object sender, RoutedEventArgs e) => _player.Previous();
@@ -103,5 +120,23 @@ namespace AudioVisualizer
             }
         }
         private void NextButton_Click(object sender, RoutedEventArgs e) => _player.Next();
+
+        private void VolumeSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (_player != null)
+                _player.Volume = (float)e.NewValue;
+        }
+
+        private void TitleBar_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            DragMove();
+        }
+
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            _player.Stop();
+            _player.Dispose();
+            Application.Current.Shutdown();
+        }
     }
 }

@@ -4,23 +4,222 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AudioVisualizer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Audio Visualizer" Height="700" Width="1100"
+        Background="#0d0d1a"
+        BorderThickness="0"
+        WindowStyle="None"
+        ResizeMode="CanResizeWithGrip"
+        AllowsTransparency="False">
+
+    <Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#00ffff"/>
+            <Setter Property="BorderBrush" Value="#00ffff"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="Width" Value="60"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect Color="#00ffff" BlurRadius="8" 
+                                      ShadowDepth="0" Opacity="0.6"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1a1a3a"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#ff00c8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#ff00c8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="TitleBarButton" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#00ffff"/>
+            <Setter Property="BorderBrush" Value="#00ffff"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                      VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#1a1a3a"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="#ff00c8"/>
+                            </Trigger>
+                            <Trigger Property="IsPressed" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#ff00c8"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style TargetType="Slider">
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="1"/>
+            <Setter Property="Value" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Slider">
+                        <Grid HorizontalAlignment="Center" Width="40">
+                            <!-- Track baggrund -->
+                            <Border x:Name="TrackBackground"
+                            Width="3"
+                            Background="#1a1a3a"
+                            BorderBrush="#00ffff"
+                            BorderThickness="1"
+                            CornerRadius="2"
+                            HorizontalAlignment="Center">
+                                <Border.Effect>
+                                    <DropShadowEffect Color="#00ffff" BlurRadius="6" ShadowDepth="0" Opacity="0.3"/>
+                                </Border.Effect>
+                            </Border>
+
+                            <!-- Den faktiske track med thumb -->
+                            <Track x:Name="PART_Track">
+                                <Track.DecreaseRepeatButton>
+                                    <RepeatButton Command="Slider.DecreaseLarge" Opacity="0"/>
+                                </Track.DecreaseRepeatButton>
+                                <Track.Thumb>
+                                    <Thumb>
+                                        <Thumb.Template>
+                                            <ControlTemplate TargetType="Thumb">
+                                                <Ellipse x:Name="thumb"
+                                                 Width="16" Height="16"
+                                                 Fill="#00ffff">
+                                                    <Ellipse.Effect>
+                                                        <DropShadowEffect Color="#00ffff" BlurRadius="12" ShadowDepth="0" Opacity="1"/>
+                                                    </Ellipse.Effect>
+                                                </Ellipse>
+                                            </ControlTemplate>
+                                        </Thumb.Template>
+                                    </Thumb>
+                                </Track.Thumb>
+                                <Track.IncreaseRepeatButton>
+                                    <RepeatButton Command="Slider.IncreaseLarge" Opacity="0"/>
+                                </Track.IncreaseRepeatButton>
+                            </Track>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="40"/>
+        </Grid.ColumnDefinitions>
+        
         <Grid.RowDefinitions>
+            <RowDefinition Height="50"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="5">
-            <Button x:Name="PreviousButton" Content="⏮" Width="60" Height="40" Click="PreviousButton_Click" Margin="5"/>
-            <Button x:Name="PausePlayButton" Content="▶" Width="60" Height="40" Click="PausePlayButton_Click" Margin="5"/>
-            <Button x:Name="NextButton" Content="⏭" Width="60" Height="40" Click="NextButton_Click" Margin="5"/>
-            <Button x:Name="ToggleVisualizerButton" Content="Toggle View" Width="100" Height="40" Click="ToggleVisualizerButton_Click" Margin="5"/>
-        </StackPanel>
-        <ContentControl x:Name="VisualizerHost" Grid.Row="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        
+        <!-- Row 0: Title Bar -->
+        <Border Grid.Row="0"  Background="#0d0d1a" 
+                MouseLeftButtonDown="TitleBar_MouseLeftButtonDown">
+            <Grid>
+                <Button Content="Toggle View" 
+                        Style="{StaticResource TitleBarButton}"
+                        Width="90" 
+                        HorizontalAlignment="left"
+                        Click="ToggleVisualizerButton_Click"/>
+                
+                <TextBlock Text="AUDIO VISUALIZER" 
+                   Foreground="#00ffff"
+                   FontFamily="Consolas"
+                   FontSize="12"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center">
+                    
+                    <TextBlock.Effect>
+                        <DropShadowEffect Color="#00ffff" BlurRadius="8" ShadowDepth="0" Opacity="0.7"/>
+                    </TextBlock.Effect>
+                </TextBlock>
 
+                <!-- Close button -->
+                <Button Content="✕" 
+                        Style="{StaticResource TitleBarButton}"
+                        HorizontalAlignment="Right"
+                        Width="36"
+                        Click="CloseButton_Click"/>
+            </Grid>
+        </Border>
+
+
+        <Slider x:Name="VolumeSlider"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Grid.RowSpan="4"
+                    Orientation="Vertical"
+                    VerticalAlignment="Stretch"
+                    HorizontalAlignment="Center"
+                    Minimum="0"
+                    Maximum="1"
+                    Value="1"
+                    ValueChanged="VolumeSlider_ValueChanged"/>
+        
+        <!-- Row 1: Control Buttons -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" >
+            <Button x:Name="PreviousButton" Content="⏮" Click="PreviousButton_Click"/>
+            <Button x:Name="PausePlayButton" Content="▶" Click="PausePlayButton_Click"/>
+            <Button x:Name="NextButton" Content="⏭" Click="NextButton_Click"/>
+
+        </StackPanel>
+
+        <!-- Row 2: Track Name -->
+        <TextBlock x:Name="TrackNameText" 
+           Grid.Row="2"
+           Text="No track loaded"
+           Foreground="#00ffff"
+           FontSize="14"
+           FontFamily="Consolas"
+           HorizontalAlignment="Center"
+           Margin="0,0,0,8">
+            <TextBlock.Effect>
+                <DropShadowEffect Color="#00ffff" BlurRadius="10" ShadowDepth="0" Opacity="0.8"/>
+            </TextBlock.Effect>
+        </TextBlock>
+
+        <ContentControl x:Name="VisualizerHost" Grid.Row="3" />
     </Grid>
 </Window>

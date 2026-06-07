@@ -6,5 +6,7 @@
              xmlns:local="clr-namespace:AudioVisualizer.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <Canvas x:Name="Canvas" Background="Black" Width="600" Height="200"/>
+    <Grid x:Name="RootGrid"  Background="#0d0d1a">
+        <Canvas x:Name="Canvas"/>
+    </Grid>
 </UserControl>

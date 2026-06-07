@@ -17,10 +17,12 @@ namespace AudioVisualizer.Audio
 
         private readonly List<string> playlist;
         private int currentTrackIndex = -1;
+        public string CurrentTrackName { get; private set; } = string.Empty;
 
         public event Action<float>? AmplitudeChanged;
         public event Action<float[]>? FFTComputed;
         public event Action<PlayerState>? StateChanged;
+        public event Action<string>? TrackChanged;
 
         private PlayerState _state = PlayerState.Stopped;
         public PlayerState State
@@ -31,6 +33,12 @@ namespace AudioVisualizer.Audio
                 _state = value;
                 StateChanged?.Invoke(value);
             }
+        }
+
+        public float Volume
+        {
+            get => sampleChannel?.Volume ?? 1f;
+            set { if (sampleChannel != null) sampleChannel.Volume = value; }
         }
 
         public AudioPlayer(List<string> playlist)
@@ -45,6 +53,9 @@ namespace AudioVisualizer.Audio
             if (index < 0 || index >= playlist.Count) return;
 
             currentTrackIndex = index;
+            CurrentTrackName = System.IO.Path.GetFileNameWithoutExtension(playlist[currentTrackIndex]);
+            TrackChanged?.Invoke(CurrentTrackName);
+
             string audioPath = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Assets", playlist[currentTrackIndex]);
 
             audioFile = new AudioFileReader(audioPath);
@@ -94,14 +105,14 @@ namespace AudioVisualizer.Audio
             Play();
         }
 
-        private void OnStreamVolume(object sender, StreamVolumeEventArgs e)
+        private void OnStreamVolume(object? sender, StreamVolumeEventArgs e)
         {
             // Fire amplitude event
             float amp = Math.Max(e.MaxSampleValues[0], e.MaxSampleValues[1]);
             AmplitudeChanged?.Invoke(amp);
         }
 
-        private void WaveOut_PlaybackStopped(object sender, StoppedEventArgs e)
+        private void WaveOut_PlaybackStopped(object? sender, StoppedEventArgs e)
         {
             State = PlayerState.Stopped;
         }
